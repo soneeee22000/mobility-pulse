@@ -1,0 +1,83 @@
+spring:
+  application:
+    name: mobility-pulse
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/mobility
+    username: mobility
+    password: mobility
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 4
+      connection-timeout: 5000
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 500
+          order_inserts: true
+          order_updates: true
+        format_sql: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: mobility-pulse
+      auto-offset-reset: latest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: dev.pseonkyaw.mobilitypulse.*
+        spring.json.value.default.type: dev.pseonkyaw.mobilitypulse.domain.PingEvent
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    distribution:
+      percentiles-histogram:
+        mobility.ingest.latency: true
+      percentiles:
+        mobility.ingest.latency: 0.5, 0.95, 0.99
+      slo:
+        mobility.ingest.latency: 10ms, 50ms, 100ms, 500ms, 1s
+
+mobility:
+  ingest:
+    topic: pings.raw
+  simulator:
+    enabled: false
+    devices: 1000
+    pings-per-second: 200
+    bbox:
+      south: 48.815
+      west: 2.224
+      north: 48.902
+      east: 2.470
+
+logging:
+  level:
+    dev.pseonkyaw.mobilitypulse: INFO
+    org.springframework.kafka: WARN
