@@ -25,6 +25,8 @@ Every city running connected mobility — bike-share, scooter fleets, MaaS apps,
 2. **Spatial indexing via Uber H3 hexagons, not raw lat/lon range scans** — O(1) cell lookup at write time, B-tree reads on a single `BIGINT` at query time.
 3. **Live-blended continuous aggregates** — `materialized_only = false` so reads return sub-minute freshness without waiting for a refresh.
 
+![Live Grafana dashboard — simulator producing 150 pings/sec across Paris, p50/p95/p99 ingest latency, Kafka consumer throughput, JVM heap.](docs/grafana-dashboard.png)
+
 ## At a glance
 
 ```mermaid

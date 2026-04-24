@@ -8,10 +8,8 @@ import dev.pseonkyaw.mobilitypulse.domain.TransportMode;
 import dev.pseonkyaw.mobilitypulse.query.HotspotService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.TestPropertySource;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -32,8 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
                 dev.pseonkyaw.mobilitypulse.MobilityPulseApplication.class
         },
         properties = {
-                "mobility.simulator.enabled=false",
-                "spring.autoconfigure.exclude=" + "org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration"
+                "mobility.simulator.enabled=false"
         }
 )
 @Import(TestcontainersConfiguration.class)
